@@ -9,7 +9,7 @@ return {
       -- Translation engine configuration
       translate_engine = {
         base_url = "https://generativelanguage.googleapis.com/v1beta",
-        api_key = os.getenv("OPENAI_API_KEY"), -- Set your OpenAI API key in environment variable
+        api_key = os.getenv("GEMINI_API_KEY"), -- Set your OpenAI API key in environment variable
         model = "gemini-2.5-flash-preview-05-20",
         temperature = 0.8,
         streaming = true, -- Enable streaming translation
@@ -17,7 +17,7 @@ return {
       -- Language detection engine configuration
       detect_engine = {
         base_url = "https://generativelanguage.googleapis.com/v1beta",
-        api_key = os.getenv("OPENAI_API_KEY"),
+        api_key = os.getenv("GEMINI_API_KEY"),
         model = "gemini-2.5-flash-preview-05-20",
       },
       -- UI configuration
