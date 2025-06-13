@@ -12,7 +12,6 @@ return {
         extra_request_body = {
           generationConfig = {
             temperature = 0.75,
-            maxOutputTokens = 8192,
             topK = 40,
             topP = 0.95,
           },
@@ -30,8 +29,6 @@ return {
       enable_run = true,
       run_commands = {
         python = "python3",
-        javascript = "node",
-        typescript = "tsx",
         sh = "bash",
       },
     },
@@ -43,7 +40,6 @@ return {
       diff_mode = true,
     },
     context = {
-      max_tokens = 16384,
       include_diagnostics = true,
       include_treesitter = true,
       include_git_diff = true,
@@ -79,7 +75,6 @@ return {
     "ibhagwan/fzf-lua", -- for file_selector provider fzf
     "stevearc/dressing.nvim", -- for input provider dressing
     "folke/snacks.nvim", -- for input provider snacks
-    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
     {
       "HakonHarnes/img-clip.nvim",
       event = "VeryLazy",
