@@ -7,38 +7,8 @@ return {
   lazy = false,
   event = { "BufReadPost", "BufNewFile", "VeryLazy" },
   config = function()
-    -- Catppuccin 색상 가져오기
-    local colors = require("catppuccin.palettes").get_palette("mocha")
-    
-    -- 커스텀 테마 정의
-    local custom_theme = {
-      normal = {
-        a = { bg = colors.blue, fg = colors.mantle, gui = "bold" },
-        b = { bg = colors.surface1, fg = colors.blue },
-        c = { bg = colors.mantle, fg = colors.text },
-      },
-      insert = {
-        a = { bg = colors.green, fg = colors.mantle, gui = "bold" },
-        b = { bg = colors.surface1, fg = colors.green },
-      },
-      visual = {
-        a = { bg = colors.mauve, fg = colors.mantle, gui = "bold" },
-        b = { bg = colors.surface1, fg = colors.mauve },
-      },
-      command = {
-        a = { bg = colors.peach, fg = colors.mantle, gui = "bold" },
-        b = { bg = colors.surface1, fg = colors.peach },
-      },
-      replace = {
-        a = { bg = colors.red, fg = colors.mantle, gui = "bold" },
-        b = { bg = colors.surface1, fg = colors.red },
-      },
-      inactive = {
-        a = { bg = colors.surface0, fg = colors.overlay1 },
-        b = { bg = colors.surface0, fg = colors.overlay1 },
-        c = { bg = colors.mantle, fg = colors.overlay0 },
-      },
-    }
+    -- Edge 테마 사용 (내장 테마 활용)
+    local edge_theme = 'edge'
 
     -- 커스텀 컴포넌트들
     local function get_python_venv()
@@ -90,7 +60,7 @@ return {
 
     require("lualine").setup({
       options = {
-        theme = custom_theme,
+        theme = edge_theme,  -- Edge 테마 사용
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
         globalstatus = true,
@@ -106,34 +76,16 @@ return {
           {
             "fancy_mode",
             width = 3,
-            color = function()
-              local mode_colors = {
-                n = colors.blue,
-                i = colors.green,
-                v = colors.mauve,
-                V = colors.mauve,
-                c = colors.peach,
-                R = colors.red,
-                t = colors.teal,
-              }
-              return { fg = colors.mantle, bg = mode_colors[vim.fn.mode():sub(1,1)] or colors.blue, gui = "bold" }
-            end,
           },
         },
         lualine_b = {
           {
             "fancy_branch",
             icon = "🌿",
-            color = { fg = colors.green, bg = colors.surface1 },
           },
           {
             "fancy_diff",
             symbols = { added = " ", modified = " ", removed = " " },
-            diff_color = {
-              added = { fg = colors.green },
-              modified = { fg = colors.yellow },
-              removed = { fg = colors.red },
-            },
           },
         },
         lualine_c = {
@@ -141,7 +93,6 @@ return {
             "fancy_cwd",
             substitute_home = true,
             icon = "📂",
-            color = { fg = colors.sapphire, bg = colors.surface0 },
           },
           {
             "filename",
@@ -152,46 +103,34 @@ return {
               unnamed = " 󰎞",
               newfile = " 󰄛",
             },
-            color = { fg = colors.text },
           },
           {
             get_file_size,
             icon = "📏",
-            color = { fg = colors.overlay2 },
           },
         },
         -- 오른쪽 섹션
         lualine_x = {
           {
             get_python_venv,
-            color = { fg = colors.yellow, bg = colors.surface1 },
           },
           {
             "fancy_diagnostics",
             sources = { "nvim_lsp" },
             symbols = { error = " ", warn = " ", info = " ", hint = " " },
-            diagnostics_color = {
-              error = { fg = colors.red },
-              warn = { fg = colors.yellow },
-              info = { fg = colors.sky },
-              hint = { fg = colors.teal },
-            },
           },
           {
             get_lsp_status,
-            color = { fg = colors.lavender },
           },
         },
         lualine_y = {
           {
             "fancy_filetype",
             ts_icon = "🌳",
-            color = { fg = colors.blue, bg = colors.surface1 },
           },
           {
             "encoding",
             fmt = string.upper,
-            color = { fg = colors.green },
           },
           {
             "fileformat",
@@ -200,18 +139,15 @@ return {
               dos = "󰍲",
               mac = "󰀵",
             },
-            color = { fg = colors.teal },
           },
         },
         lualine_z = {
           {
             "fancy_location",
-            color = { fg = colors.mantle, bg = colors.blue, gui = "bold" },
           },
           {
             get_current_time,
             icon = "🕐",
-            color = { fg = colors.mantle, bg = colors.mauve, gui = "bold" },
           },
         },
       },
@@ -221,7 +157,6 @@ return {
         lualine_c = {
           {
             "filename",
-            color = { fg = colors.overlay1 },
           },
         },
         lualine_x = { "location" },
