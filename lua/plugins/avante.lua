@@ -24,6 +24,17 @@ return {
         },
       },
     },
+    file_selector = {
+      provider = "fzf-lua", -- 또는 "telescope"
+      provider_opts = {
+        fzf_lua = {
+          winopts = {
+            height = 0.8,
+            width = 0.8,
+          },
+        },
+      },
+    },
     code_block = {
       enable_copy = true,
       enable_run = true,
@@ -56,9 +67,29 @@ return {
         icon = "󰌌 ",
       },
     },
+    highlights = {
+      diff = {
+        current = "DiffText",
+        incoming = "DiffAdd",
+      },
+    },
     system_prompt = function()
-      local hub = require("mcphub").get_hub_instance()
-      return hub and hub:get_active_servers_prompt() or ""
+      local hub_prompt = require("mcphub").get_hub_instance()
+      local base_prompt = hub_prompt and hub_prompt:get_active_servers_prompt() or ""
+
+      local custom_prompt = [[
+      You are an expert system engineer and Python developer assistant.
+      Focus on:
+      - Infrastructure as Code (Terraform, Ansible)
+      - Python best practices and performance
+      - DevOps automation and monitoring
+      - AWS services and architecture
+      - Security and compliance
+      - Error handling and logging
+      Always provide production-ready, secure, and scalable solutions.
+      ]]
+
+      return base_prompt .. "\n" .. custom_prompt
     end,
 
     custom_tools = function()
