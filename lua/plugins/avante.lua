@@ -3,27 +3,61 @@ return {
   event = "VeryLazy",
   version = false, -- Never set this value to "*"! Never!
   opts = {
-    -- add any opts here
-    -- for example
     provider = "gemini",
     providers = {
       gemini = {
         endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
         model = "gemini-2.5-flash-preview-05-20",
-        timeout = 30000, -- Timeout in milliseconds
+        timeout = 30000,
         extra_request_body = {
           generationConfig = {
             temperature = 0.75,
+            maxOutputTokens = 8192,
+            topK = 40,
+            topP = 0.95,
+          },
+          safetySettings = {
+            {
+              category = "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold = "BLOCK_NONE",
+            },
           },
         },
       },
     },
+    code_block = {
+      enable_copy = true,
+      enable_run = true,
+      run_commands = {
+        python = "python3",
+        javascript = "node",
+        typescript = "tsx",
+        sh = "bash",
+      },
+    },
+    ui = {
+      theme = "auto",
+      show_token_count = true,
+      show_model_info = true,
+      auto_suggestions = true,
+      diff_mode = true,
+    },
+    context = {
+      max_tokens = 16384,
+      include_diagnostics = true,
+      include_treesitter = true,
+      include_git_diff = true,
+    },
+    post_process = {
+      format_code = true,
+      organize_imports = true,
+      add_type_hints = true,
+    },
     input = {
       provider = "snacks",
       provider_opts = {
-        -- Additional snacks.input options
         title = "Avante Input",
-        icon = "",
+        icon = "󰌌 ",
       },
     },
     system_prompt = function()
@@ -37,27 +71,19 @@ return {
       }
     end,
   },
-  -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
-  -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    --- The below dependencies are optional,
-    "echasnovski/mini.pick", -- for file_selector provider mini.pick
-    "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-    "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
     "ibhagwan/fzf-lua", -- for file_selector provider fzf
     "stevearc/dressing.nvim", -- for input provider dressing
     "folke/snacks.nvim", -- for input provider snacks
     "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
     {
-      -- support for image pasting
       "HakonHarnes/img-clip.nvim",
       event = "VeryLazy",
       opts = {
-        -- recommended settings
         default = {
           embed_image_as_base64 = false,
           prompt_for_file_name = false,
@@ -70,7 +96,6 @@ return {
       },
     },
     {
-      -- Make sure to set this up properly if you have lazy=true
       "MeanderingProgrammer/render-markdown.nvim",
       opts = {
         file_types = { "markdown", "Avante" },
