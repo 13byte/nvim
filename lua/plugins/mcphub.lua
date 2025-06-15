@@ -2,7 +2,6 @@ return {
   "ravitemer/mcphub.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "yetone/avante.nvim",
   },
   build = "npm install -g mcp-hub@latest", -- Installs `mcp-hub` node binary globally
   config = function()

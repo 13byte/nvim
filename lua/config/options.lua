@@ -5,6 +5,3 @@
 -- Python LSP 설정
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff"
-
--- Edge 테마를 기본 colorscheme으로 설정
-vim.g.lazyvim_colorscheme = "edge"
