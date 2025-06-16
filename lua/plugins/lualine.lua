@@ -207,7 +207,7 @@ return {
           },
           {
             get_current_time,
-            color = { fg = "#ABB2BF" },
+            color = { fg = "#F2ECC3" },
           },
         },
       },
