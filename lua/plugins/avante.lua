@@ -6,8 +6,8 @@ return {
     provider = "gemini",
     providers = {
       gemini = {
-        endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
-        model = "gemini-2.5-flash-preview-05-20",
+        endpoint = "https://generativelanguage.googleapis.com/v1beta",
+        model = "gemini-2.5-flash",
         timeout = 30000,
         extra_request_body = {
           generationConfig = {
