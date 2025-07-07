@@ -23,6 +23,10 @@ return {
         },
       },
     },
+    web_search_engine = {
+      provider = "google",
+      proxy = nil,
+    },
     file_selector = {
       provider = "fzf-lua", -- 또는 "telescope"
       provider_opts = {
