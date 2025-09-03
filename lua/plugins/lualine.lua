@@ -1,22 +1,15 @@
 -- plugins/lualine.lua
 return {
   "nvim-lualine/lualine.nvim",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
+  dependencies = { 
+    "nvim-tree/nvim-web-devicons",
+    "sainnhe/edge"
+  },
+  event = "VeryLazy",
   config = function()
+    -- Edge 팔레트 로드
+    local palette = require("config.edge-palette").colors
     local lualine = require("lualine")
-
-    local colors = {
-      bg = "#2d2f3a",
-      fg = "#e4e5e8",
-      yellow = "#e69f6a",
-      cyan = "#74bee9",
-      green = "#98c47a",
-      orange = "#f89860",
-      violet = "#c39be8",
-      magenta = "#c39be8",
-      blue = "#79a0e6",
-      red = "#e37b98",
-    }
 
     local conditions = {
       buffer_not_empty = function()
@@ -35,13 +28,22 @@ return {
     -- Config
     local config = {
       options = {
-        component_separators = "",
-        section_separators = "",
-        theme = {
-          -- lualine의 기본 배경/전경색을 edge 테마에 맞춤
-          normal = { c = { fg = colors.fg, bg = colors.bg } },
-          inactive = { c = { fg = colors.fg, bg = colors.bg } },
+        icons_enabled = true,
+        theme = 'edge', -- Edge 테마 사용
+        component_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
+        disabled_filetypes = {
+          statusline = { "dashboard", "alpha", "lazy" },
+          winbar = {},
         },
+        ignore_focus = {},
+        always_divide_middle = true,
+        globalstatus = false,
+        refresh = {
+          statusline = 1000,
+          tabline = 1000,
+          winbar = 1000,
+        }
       },
       sections = {
         lualine_a = {},
@@ -56,152 +58,186 @@ return {
         lualine_b = {},
         lualine_y = {},
         lualine_z = {},
-        lualine_c = {},
-        lualine_x = {},
+        lualine_c = { 'filename' },
+        lualine_x = { 'location' },
       },
+      tabline = {},
+      winbar = {},
+      inactive_winbar = {},
+      extensions = { 'fugitive', 'neo-tree', 'trouble', 'lazy' }
     }
 
-    -- Inserts a component in lualine_c at left section
+    -- Helper functions
     local function ins_left(component)
       table.insert(config.sections.lualine_c, component)
     end
 
-    -- Inserts a component in lualine_x at right section
     local function ins_right(component)
       table.insert(config.sections.lualine_x, component)
     end
 
+    -- Left side
     ins_left({
-      function()
-        return "▊"
-      end,
-      color = { fg = colors.blue },
+      function() return '▊' end,
+      color = { fg = palette.blue },
       padding = { left = 0, right = 1 },
     })
 
     ins_left({
       -- mode component
       function()
-        return ""
+        return ''
       end,
       color = function()
+        -- Edge 테마 색상으로 모드 표시
         local mode_color = {
-          n = colors.red,
-          i = colors.green,
-          v = colors.blue,
-          [""] = colors.blue,
-          V = colors.blue,
-          c = colors.magenta,
-          no = colors.red,
-          s = colors.orange,
-          S = colors.orange,
-          [""] = colors.orange,
-          ic = colors.yellow,
-          R = colors.violet,
-          Rv = colors.violet,
-          cv = colors.red,
-          ce = colors.red,
-          r = colors.cyan,
-          rm = colors.cyan,
-          ["r?"] = colors.cyan,
-          ["!"] = colors.red,
-          t = colors.red,
+          n = palette.blue,      -- Normal
+          i = palette.green,     -- Insert
+          v = palette.purple,    -- Visual
+          [''] = palette.purple,
+          V = palette.purple,
+          c = palette.orange,    -- Command
+          no = palette.red,
+          s = palette.cyan,      -- Select
+          S = palette.cyan,
+          [''] = palette.cyan,
+          ic = palette.yellow,
+          R = palette.red,       -- Replace
+          Rv = palette.red,
+          cv = palette.red,
+          ce = palette.red,
+          r = palette.cyan,
+          rm = palette.cyan,
+          ['r?'] = palette.cyan,
+          ['!'] = palette.red,
+          t = palette.orange,    -- Terminal
         }
-        return { fg = mode_color[vim.fn.mode()] }
+        return { fg = mode_color[vim.fn.mode()], gui = 'bold' }
       end,
       padding = { right = 1 },
     })
 
     ins_left({
-      "filesize",
+      'filesize',
       cond = conditions.buffer_not_empty,
+      color = { fg = palette.grey },
     })
 
     ins_left({
-      "filename",
+      'filename',
       cond = conditions.buffer_not_empty,
-      color = { fg = colors.magenta, gui = "bold" },
-    })
-
-    ins_left({ "location" })
-
-    ins_left({ "progress", color = { fg = colors.fg, gui = "bold" } })
-
-    ins_left({
-      "diagnostics",
-      sources = { "nvim_diagnostic" },
-      symbols = { error = " ", warn = " ", info = " " },
-      diagnostics_color = {
-        error = { fg = colors.red },
-        warn = { fg = colors.yellow },
-        info = { fg = colors.cyan },
+      color = { fg = palette.fg, gui = 'bold' },
+      symbols = {
+        modified = ' ●',
+        readonly = ' ',
+        unnamed = '[No Name]',
+        newfile = '[New]',
       },
     })
 
-    ins_left({
-      function()
-        return "%="
-      end,
+    ins_left({ 
+      'location',
+      color = { fg = palette.grey }
+    })
+
+    ins_left({ 
+      'progress', 
+      color = { fg = palette.fg, gui = 'bold' }
     })
 
     ins_left({
-      -- Lsp server name .
+      'diagnostics',
+      sources = { 'nvim_diagnostic' },
+      symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
+      diagnostics_color = {
+        error = { fg = palette.red },
+        warn = { fg = palette.yellow },
+        info = { fg = palette.cyan },
+        hint = { fg = palette.purple },
+      },
+    })
+
+    -- Middle separator
+    ins_left({
+      function() return '%=' end,
+    })
+
+    ins_left({
+      -- Lsp server name
       function()
-        local msg = "No Active Lsp"
-        local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
+        local msg = 'No LSP'
+        local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
         local clients = vim.lsp.get_clients()
         if next(clients) == nil then
           return msg
         end
+        local client_names = {}
         for _, client in ipairs(clients) do
           local filetypes = client.config.filetypes
           if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-            return client.name
+            table.insert(client_names, client.name)
           end
+        end
+        if #client_names > 0 then
+          return ' ' .. table.concat(client_names, ', ')
         end
         return msg
       end,
-      icon = " LSP:",
-      color = { fg = colors.fg, gui = "bold" },
+      icon = ' ',
+      color = { fg = palette.purple, gui = 'bold' },
     })
 
-    -- Add components to right sections
+    -- Right side
     ins_right({
-      "o:encoding",
+      -- Python virtual environment
+      function()
+        local venv = vim.env.VIRTUAL_ENV
+        if venv then
+          local venv_name = vim.fn.fnamemodify(venv, ':t')
+          return '󰌠 ' .. venv_name
+        end
+        return ''
+      end,
+      cond = function()
+        return vim.bo.filetype == 'python'
+      end,
+      color = { fg = palette.green, gui = 'bold' },
+    })
+
+    ins_right({
+      'o:encoding',
       fmt = string.upper,
       cond = conditions.hide_in_width,
-      color = { fg = colors.green, gui = "bold" },
+      color = { fg = palette.grey },
     })
 
     ins_right({
-      "fileformat",
+      'fileformat',
       fmt = string.upper,
-      icons_enabled = false,
-      color = { fg = colors.green, gui = "bold" },
+      icons_enabled = true,
+      color = { fg = palette.grey },
     })
 
     ins_right({
-      "branch",
-      icon = "",
-      color = { fg = colors.violet, gui = "bold" },
+      'branch',
+      icon = '',
+      color = { fg = palette.purple, gui = 'bold' },
     })
 
     ins_right({
-      "diff",
-      symbols = { added = " ", modified = "󰝤 ", removed = " " },
+      'diff',
+      symbols = { added = ' ', modified = '󰝤 ', removed = ' ' },
       diff_color = {
-        added = { fg = colors.green },
-        modified = { fg = colors.orange },
-        removed = { fg = colors.red },
+        added = { fg = palette.green },
+        modified = { fg = palette.yellow },
+        removed = { fg = palette.red },
       },
       cond = conditions.hide_in_width,
     })
 
     ins_right({
-      function()
-        return "▊"
-      end,
-      color = { fg = colors.blue },
+      function() return '▊' end,
+      color = { fg = palette.blue },
       padding = { left = 1 },
     })
 

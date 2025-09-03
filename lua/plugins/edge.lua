@@ -3,26 +3,28 @@ return {
   lazy = false,
   priority = 1000,
   config = function()
-    -- Edge 테마 설정
-    vim.g.edge_style = 'aura'                    -- Dark(Aura) 스타일 적용
-    vim.g.edge_enable_italic = true              -- 이탤릭 활성화
-    vim.g.edge_disable_italic_comment = false    -- 주석 이탤릭 유지
-    vim.g.edge_better_performance = true         -- 성능 최적화
-    vim.g.edge_transparent_background = 0        -- 투명 배경 비활성화
-    vim.g.edge_dim_foreground = 0                -- 일반 전경색 사용
-    vim.g.edge_cursor = 'auto'                   -- 자동 커서 색상
-    vim.g.edge_menu_selection_background = 'blue'-- 메뉴 선택 배경색
-    vim.g.edge_spell_foreground = 'none'         -- 맞춤법 검사 전경색
-    vim.g.edge_show_eob = 1                      -- 버퍼 끝 표시
-    vim.g.edge_float_style = 'bright'            -- 플로팅 윈도우 스타일
-    vim.g.edge_diagnostic_text_highlight = 0     -- 진단 텍스트 하이라이트
-    vim.g.edge_diagnostic_line_highlight = 0     -- 진단 라인 하이라이트
-    vim.g.edge_diagnostic_virtual_text = 'grey'  -- 가상 텍스트 스타일
-    vim.g.edge_current_word = 'grey background'  -- 현재 단어 하이라이트
-    vim.g.edge_inlay_hints_background = 'none'   -- 인레이 힌트 배경
-    vim.g.edge_disable_terminal_colors = 0       -- 터미널 색상 활성화
+    -- Edge Aura 테마 최적화 설정
+    vim.g.edge_style = 'aura'
+    vim.g.edge_enable_italic = true
+    vim.g.edge_disable_italic_comment = false
+    vim.g.edge_better_performance = true
+    vim.g.edge_transparent_background = 0
+    vim.g.edge_dim_foreground = 0
+    vim.g.edge_dim_inactive_windows = 0 -- 비활성 창 어둡게 하지 않음
+    vim.g.edge_cursor = 'auto'
+    vim.g.edge_menu_selection_background = 'blue'
+    vim.g.edge_spell_foreground = 'none'
+    vim.g.edge_show_eob = 1
+    vim.g.edge_float_style = 'bright'
+    vim.g.edge_diagnostic_text_highlight = 0
+    vim.g.edge_diagnostic_line_highlight = 0
+    vim.g.edge_diagnostic_virtual_text = 'colored' -- 'grey' -> 'colored'로 변경
+    vim.g.edge_current_word = 'grey background'
+    vim.g.edge_inlay_hints_background = 'none'
+    vim.g.edge_disable_terminal_colors = 0
+    vim.g.edge_lightline_disable_bold = 0 -- Lualine에서도 bold 사용
     
-    -- True color 지원 확인 및 활성화
+    -- True color 지원
     if vim.fn.has('termguicolors') == 1 then
       vim.opt.termguicolors = true
     end
@@ -30,13 +32,37 @@ return {
     -- Edge 테마 적용
     vim.cmd.colorscheme('edge')
     
-    -- 커스텀 하이라이트 설정 (선택사항)
+    -- 통합 색상 팔레트 로드
+    vim.defer_fn(function()
+      require('config.edge-palette').setup()
+    end, 50)
+    
+    -- 추가 커스텀 하이라이트
     vim.api.nvim_create_autocmd('ColorScheme', {
-      group = vim.api.nvim_create_augroup('EdgeCustomHighlights', {}),
+      group = vim.api.nvim_create_augroup('EdgeCustomHighlights', { clear = true }),
       pattern = 'edge',
       callback = function()
-        -- 추가적인 커스텀 하이라이트가 필요하면 여기에 추가
-        -- 예: vim.api.nvim_set_hl(0, 'Search', { bg = '#4A5D75' })
+        local palette = require('config.edge-palette').colors
+        
+        -- 더 나은 검색 하이라이트
+        vim.api.nvim_set_hl(0, 'Search', { bg = palette.bg_blue, fg = palette.fg, bold = true })
+        vim.api.nvim_set_hl(0, 'IncSearch', { bg = palette.bg_purple, fg = palette.fg, bold = true })
+        
+        -- 더 나은 선택 영역
+        vim.api.nvim_set_hl(0, 'Visual', { bg = palette.bg3 })
+        vim.api.nvim_set_hl(0, 'VisualNOS', { bg = palette.bg3 })
+        
+        -- 커서 라인
+        vim.api.nvim_set_hl(0, 'CursorLine', { bg = palette.bg1 })
+        vim.api.nvim_set_hl(0, 'CursorColumn', { bg = palette.bg1 })
+        
+        -- 팝업 메뉴
+        vim.api.nvim_set_hl(0, 'Pmenu', { bg = palette.bg2, fg = palette.fg })
+        vim.api.nvim_set_hl(0, 'PmenuSel', { bg = palette.bg_blue, fg = palette.fg, bold = true })
+        
+        -- 상태 표시줄
+        vim.api.nvim_set_hl(0, 'StatusLine', { bg = palette.bg2, fg = palette.fg })
+        vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = palette.bg1, fg = palette.grey })
       end
     })
   end,
