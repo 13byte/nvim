@@ -1,6 +1,6 @@
 return {
   "saghen/blink.cmp",
-  dependencies = "echasnovski/mini.snippets",
+  dependencies = "nvim-mini/mini.snippets",
   opts = {
     snippets = { preset = "mini_snippets" },
   },
